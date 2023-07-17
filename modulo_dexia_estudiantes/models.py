@@ -6,6 +6,7 @@ from modulo_base_login.models import CustomUser
 class Estudiante(models.Model):
 
     profesional = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False)
+    
 
     nombre = models.CharField(max_length=30, blank=False, null=False)
     primer_apellido = models.CharField(max_length=30, blank=False, null=False)
@@ -15,6 +16,10 @@ class Estudiante(models.Model):
     doc_identidad = models.TextField(unique=True, max_length=11, null=False, blank=False)
     celular = models.TextField(unique=False, max_length=11)
     codigo_estudiantil = models.TextField(unique=True, max_length=11, null=False, blank=False)
+    eps = models.TextField(max_length=30, null=True, blank=True)
+    contacto_adicional = models.TextField(max_length=11, null=True, blank=True)
+    discapacidad = models.CharField(null=True, blank=True, max_length = 20)
+    posible_desertor = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return f"{self.nombre} {self.primer_apellido} {self.segundo_apellido}"
