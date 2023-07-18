@@ -12,7 +12,7 @@ class AgendarCitaSerializer(serializers.ModelSerializer):
     estudiante = serializers.SerializerMethodField()
 
     class Meta:
-        model = Sesion
+        model = Agendar_cita  # Aquí debes utilizar el modelo Agendar_cita en lugar de Sesion
         fields = ['id', 'profesional', 'estudiante', 'fecha']
 
     def get_profesional(self, obj):
