@@ -12,7 +12,7 @@ from datetime import datetime, date, time
 from django.http import Http404
 
 
-class Agendar_cita(APIView):
+class AgendarCitaView(APIView):
     permission_classes = [AllowAny]
     authentication_classes = []
 
@@ -21,6 +21,7 @@ class Agendar_cita(APIView):
         cedula_profesional = request.data.get("cedula_profesional")
         cedula_estudiante = request.data.get("cedula_estudiante")
         fecha_str = request.data.get("fecha_Sesion")
+        print(fecha_str)
 
         try:
             # Obtener el profesional y el estudiante por su cédula
@@ -30,15 +31,13 @@ class Agendar_cita(APIView):
             # Convertir la fecha de cadena a objeto datetime
             fecha = datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M")
  
-            # Obtener solo la parte de la fecha (sin la hora)
-            fecha_proxima_sesion = fecha.date()
-            print(fecha_proxima_sesion)
+            
 
             # Crear una nueva instancia de Sesion con los datos recibidos
             sesion = Agendar_cita(
                 profesional=profesional,
                 estudiante=estudiante,
-                fecha=fecha_proxima_sesion,
+                fecha=fecha,
             )
 
             # Guardar la sesión en la base de datos
@@ -46,8 +45,8 @@ class Agendar_cita(APIView):
             print('guardo')
 
             return Response(status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'message': 'Error al agendar la sesion', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -262,7 +261,8 @@ class ListarSesiones(APIView):
                 start_of_day = datetime.combine(fecha_especifica, time.min)
                 end_of_day = datetime.combine(fecha_especifica, time.max)
 
-                sesiones_fecha_especifica = Agendar_cita.objects.filter(fecha__range=(start_of_day, end_of_day))
+                sesiones = Agendar_cita.objects.filter(fecha__range=(start_of_day, end_of_day))
+                
                 
             except ValueError:
                 raise Http404("Fecha inválida")
@@ -277,5 +277,5 @@ class ListarSesiones(APIView):
             else:
                 sesiones = Agendar_cita.objects.all()
 
-        serializer = SesionSerializer(sesiones, many=True)
+        serializer = AgendarCitaSerializer(sesiones, many=True)
         return Response(serializer.data) 

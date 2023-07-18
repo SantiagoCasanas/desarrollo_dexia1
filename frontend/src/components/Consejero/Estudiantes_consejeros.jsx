@@ -3,6 +3,11 @@ import { api } from "../../api/register_api";
 import { Button, Modal } from "react-bootstrap";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css"; // Estilo predeterminado de react-time-picker
+import Clock from "react-clock";
+import "react-clock/dist/Clock.css";
+import Swal from "sweetalert2";
 
 export function Estudiantes_consejeros() {
   const [estudiantes, setEstudiantes] = useState([]);
@@ -12,7 +17,7 @@ export function Estudiantes_consejeros() {
   const [selectedIdentificacion, setSelectedIdentificacion] = useState("");
 
   const [selectedDate, setSelectedDate] = useState("");
-const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
 
   const id = sessionStorage.getItem("id");
 
@@ -27,6 +32,13 @@ const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T
     setNombreFiltro(nombre);
     fetchEstudiantes(identificacionFiltro, nombre, codigoFiltro);
   };
+
+  const [selectedTime, setSelectedTime] = useState("12:00"); // Hora inicial
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
+
 
   const handCodigoFilter = (event) => {
     const codigo = event.target.value;
@@ -68,12 +80,35 @@ const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T
   };
 
   const handleFormSubmit = (event) => {
+
     event.preventDefault();
+    console.log(selectedDate)
+        // Obtener las partes de la fecha (año, mes, día)
+        
+    if (selectedDate==null){
+
+      Swal.fire({
+        icon: "error",
+        title: "Hubo un error",
+        text: "Escoge una fecha para agendar cita",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        showCancelButton: false,
+        timer: 2000,
+      });
+    }
+
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+
+    // Combinar las partes de la fecha y hora seleccionada manualmente
+    const fechaHora = `${year}-${month}-${day}T${selectedTime}`;
 
     const requestData = {
       cedula_profesional: sessionStorage.getItem('cedula'),
       cedula_estudiante: selectedIdentificacion,
-      fecha_Sesion: selectedDate,
+      fecha_Sesion: fechaHora,
     };
 
     api
@@ -82,9 +117,27 @@ const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T
         console.log("Fecha seleccionada:", selectedDate);
         console.log("Identificación del estudiante:", selectedIdentificacion);
        /*  handleModalClose(); */
+        Swal.fire({
+          icon: "success",
+          title: "Operación exitosa",
+          text: "Se ha creado la cita con éxito",
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          showCancelButton: false,
+          timer: 2000,
+        });
       })
       .catch((error) => {
         console.error(error);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Verifica los datos",
+          showConfirmButton: false,
+          allowOutsideClick: false,
+          showCancelButton: false,
+          timer: 2000,
+        });
       });
   };
 
@@ -94,6 +147,8 @@ const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T
     setSelectedDate(date);
     setCurrentDate(date);
   };
+
+
 
   return (
     <div>
@@ -251,6 +306,19 @@ const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T
         placeholderText="Seleccionar fecha"
       />
     </div>
+
+    <div>
+      <h3>Selecciona la hora:</h3>
+      <TimePicker
+        onChange={handleTimeChange}
+        value={selectedTime}
+        disableClock={true} // Deshabilita el reloj interactivo para tener solo los campos numéricos
+        hourPlaceholder="HH"
+        minutePlaceholder="mm"
+        clearIcon={null} // Oculta el icono de borrar (x)
+      />
+    </div>
+
     <div className="form-group">
       <button type="submit" className="btn btn-primary">Enviar</button>
     </div>
