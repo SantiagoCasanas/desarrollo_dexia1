@@ -28,19 +28,23 @@ export function Sesiones_list() {
 
   const fetchSesiones = async () => {
     try {
+
       const formattedDate = selectedDate.toISOString().split('T')[0]; // Formatear la fecha como YYYY-MM-DD
       if (initialLoad) {
         const response = await api.get('sesiones/listar_sesiones/');
         setSesiones(response.data);
+
       } else {
         const response = await api.get(`sesiones/listar_sesiones/?fecha=${formattedDate}`);
         console.log(selectedDate)
         setSesiones(response.data);
       }
+
     } catch (error) {
       console.error('Error al obtener las sesiones:', error);
     }
   };
+
 
   return (
     <div>
@@ -87,22 +91,19 @@ export function Sesiones_list() {
                         <table className="table table-striped mb-0">
                           <thead style={{ backgroundColor: '#D02424' }}>
                             <tr>
-                              <th scope="col">Estudiante</th>
-                              <th scope="col">Asistencia</th>
-                              <th scope="col">Fecha creación</th>
-                              <th scope="col">Descripción</th>
-                              <th scope="col">Fecha de sesión</th>
-                              <th scope="col">Acciones</th>
+                            <th scope="col">Estudiante</th>
+                              <th scope="col">Fecha</th>
+                              <th scope="col">Hora</th>
+                              <th scope="col">Tipo de sesión</th>
                             </tr>
                           </thead>
                           <tbody>
                             {sesiones.map((sesion) => (
                               <tr key={sesion.id}>
                                 <td>{sesion.estudiante}</td>
-                                <td>{sesion.asistencia ? 'Presente' : 'Ausente'}</td>
-                                <td>{sesion.fecha}</td>
-                                <td>{sesion.descripcion}</td>
-                                <td>{sesion.fecha_proxima_sesion}</td>
+                                <td>{new Date(sesion.fecha).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                                <td>{new Date(sesion.fecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</td>
+                            
                                 <td>
                                   <button
                                     className="btn btn-sm btn-danger"
@@ -128,15 +129,193 @@ export function Sesiones_list() {
         </div>
       </section>
 
-      {/* Modal crear sesion */}
-      <Modal show={showModal} onHide={handleModalClose} centered backdrop="static">
+     {/* Modal crear sesion */}
+      <Modal
+        show={showModal}
+        onHide={handleModalClose}
+        centered
+        backdrop="static"
+      >
         <Modal.Header>
           <Modal.Title>Crear sesión</Modal.Title>
           <Button variant="danger" onClick={handleModalClose}>
             <span aria-hidden="true">&times;</span>
           </Button>
         </Modal.Header>
-        <Modal.Body>Holiiii</Modal.Body>
+        <Modal.Body>
+          <form>
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo individual:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="motivo_consulta">Riesgo individual:</label>
+              <input
+                type="text"
+                id="motivo_consulta"
+                name="motivo_consulta"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo familiar:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo academico:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo economico:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo universitario:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Riesgo psicólogico:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Estimación media:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="estimacion_media">Motivo consulta:</label>
+              <input
+                type="text"
+                id="estimacion_media"
+                name="estimacion_media"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+
+            {/* Agrega los demás campos de entrada aquí */}
+
+            <div
+              style={{
+                background: "mistyrose",
+                padding: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <label htmlFor="fecha_proxima_sesion">
+                Fecha Próxima Sesión:
+              </label>
+              <input
+                type="text"
+                id="fecha_proxima_sesion"
+                name="fecha_proxima_sesion"
+                style={{ background: "lightcoral", border: "none" }}
+              />
+            </div>
+          </form>
+        </Modal.Body>
         <Modal.Footer>
           <Button
             type="submit"
@@ -152,4 +331,3 @@ export function Sesiones_list() {
     </div>
   );
 }
-
